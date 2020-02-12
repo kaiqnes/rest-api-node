@@ -15,15 +15,15 @@ router.get('/', (req, res, next) => {
                 if(error) { return res.status(500).send({ error: error, response: null }) }
                 const response = {
                     quantidade: result.length,
+                    request: {
+                        tipo: 'GET',
+                        descricao: 'Retorna todos os protudos'
+                    },
                     produtos: result.map(prod => {
                         return {
                             id_produto: prod.id_produto,
                             nome: prod.nome,
-                            preco: prod.preco,
-                            request: {
-                                tipo: 'GET',
-                                descricao: 'Retorna todos os protudos'
-                            }
+                            preco: prod.preco
                         }
                     })
                 }
@@ -122,7 +122,7 @@ router.patch('/', (req, res, next) => {
                         preco: req.body.preco,
                         request: {
                             tipo: 'PATCH',
-                            descricao: 'Cria um novo produdo'
+                            descricao: 'Atualiza um produto'
                         }
                     }
                 }
