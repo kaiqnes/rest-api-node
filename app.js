@@ -1,8 +1,11 @@
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
+const bodyParser = require('body-parser')
 
-app.use(morgan('dev'))
+app.use(morgan('dev')) // Vai logar no console todas as entradas
+app.use(bodyParser.urlencoded({ extended: false })) // Aceitará apenas dados simples
+app.use(bodyParser.json()) // Aceitará JSON no body
 
 // rotas específicas
 const rotaProdutos = require('./routes/produtos')

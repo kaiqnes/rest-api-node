@@ -4,7 +4,7 @@ const router = express.Router()
 // RETORNA TODOS OS PRODUTOS
 router.get('/', (req, res, next) => {
     res.status(200).send({
-        mensagem: 'Retornará todos os produtos'
+        mensagem: 'Retorna todos os produtos'
     })
 })
 
@@ -20,29 +20,35 @@ router.get('/:id_produto', (req, res, next) => {
     }
 
     res.status(200).send({
-        mensagem: 'Retornará os detalhes do produto específico',
+        mensagem: 'Retorna os detalhes do produto específico',
         id: id
     })
 })
 
 // INSERE UM PRODUTO
 router.post('/', (req, res, next) => {
+    const produto = {
+        nome: req.body.nome,
+        preco: req.body.preco
+    }
+
     res.status(201).send({
-        mensagem: 'Criará um novo produto'
+        mensagem: 'Cria um novo produto',
+        produtoCriado: produto
     })
 })
 
 // ATUALIZA UM PRODUTO
 router.patch('/', (req, res, next) => {
     res.status(201).send({
-        mensagem: 'Atualizará um novo produto'
+        mensagem: 'Atualiza um novo produto'
     })
 })
 
 // REMOVE UM PRODUTO
 router.delete('/', (req, res, next) => {
     res.status(201).send({
-        mensagem: 'Removerá um novo produto'
+        mensagem: 'Remove um novo produto'
     })
 })
 
