@@ -1,5 +1,8 @@
 const express = require('express')
 const app = express()
+const morgan = require('morgan')
+
+app.use(morgan('dev'))
 
 // rotas específicas
 const rotaProdutos = require('./routes/produtos')
