@@ -1,34 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const mysql = require('../mysql').pool
-const multer = require('multer')
 
-const storageCnf = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './uploads/')
-    },
-    filename: function (req, file, cb) {
-        cb(null, new Date().toISOString() + file.originalname)
-    }
-})
-
-const fileFilterCnf = (req, file, cb) => {
-    if (file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' ) {
-        cb(null, true)
-    } else {
-        cb(null, false)
-    }
-}
-
-const upload = multer({ 
-    storage: storageCnf,
-    limits: {
-        fileSize: 1024 * 1024 * 5
-    },
-    fileFilter: fileFilterCnf
-})
-
-const URL_BASE_PRODUTOS = 'http://localhost:3000/produtos/'
+const upload = require('../multer')
+const msg = require('../contants')
 
 // RETORNA TODOS OS PRODUTOS
 router.get('/', (req, res, next) => {
@@ -43,7 +18,7 @@ router.get('/', (req, res, next) => {
                     quantidade: result.length,
                     request: {
                         tipo: 'GET',
-                        descricao: 'Retorna todos os protudos'
+                        descricao: msg.PRODUCTS.ALL_PRODUCTS_DETAILS
                     },
                     produtos: result.map(prod => {
                         return {
@@ -76,7 +51,7 @@ router.get('/:id_produto', (req, res, next) => {
 
                 if (result.length === 0) {
                     return res.status(404).send({
-                        mensagem: 'Este produto não foi encontrado'
+                        mensagem: msg.PRODUCTS.NOT_FOUND
                     })
                 }
                 
@@ -88,7 +63,7 @@ router.get('/:id_produto', (req, res, next) => {
                         imagem_produto: result[0].imagem_produto,
                         request: {
                             tipo: 'GET',
-                            descricao: 'Retorna detalhes de um produdo'
+                            descricao: msg.PRODUCTS.PRODUCT_DETAILS
                         }
                     }
                 }
@@ -111,7 +86,7 @@ router.post('/', (upload.single('produto_imagem')), (req, res, next) => {
                 conn.release()
                 if (error) { return res.status(500).send({ error: error }) }
                 const response = {
-                    mensagem: 'Produto criado com sucesso',
+                    mensagem: msg.PRODUCTS.CREATED,
                     produtoCriado: {
                         id_produto: result.id_produto,
                         nome: req.body.nome,
@@ -119,7 +94,7 @@ router.post('/', (upload.single('produto_imagem')), (req, res, next) => {
                         imagem_produto: req.file.path,
                         request: {
                             tipo: 'POST',
-                            descricao: 'Cria um novo produdo'
+                            descricao: msg.PRODUCTS.CREATED_DETAILS
                         }
                     }
                 }
@@ -145,14 +120,14 @@ router.patch('/', (req, res, next) => {
 
                 if (error) { return res.status(500).send({ error: error }) }
                 const response = {
-                    mensagem: 'Produto criado com sucesso',
+                    mensagem: msg.PRODUCTS.UPDATED,
                     produtoAtualizado: {
                         id_produto: req.body.id_produto,
                         nome: req.body.nome,
                         preco: req.body.preco,
                         request: {
                             tipo: 'PATCH',
-                            descricao: 'Atualiza um produto'
+                            descricao: msg.PRODUCTS.UPDATED_DETAILS
                         }
                     }
                 }
@@ -176,10 +151,10 @@ router.delete('/', (req, res, next) => {
                 if (error) { return res.status(500).send({ error: error }) }
 
                 const response = {
-                    mensagem: 'Produto removido com sucesso',
+                    mensagem: msg.PRODUCTS.REMOVED,
                     request: {
                         tipo: 'DELETE',
-                        descricao: 'Remove um produto'
+                        descricao: msg.PRODUCTS.REMOVED_DETAILS
                     }
                 }
                 return res.status(202).send(response)

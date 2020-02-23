@@ -3,6 +3,7 @@ const router = express.Router()
 const mysql = require('../mysql').pool
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const msg = require('../contants')
 
 router.post('/cadastro', (req, res, next) => {
     mysql.getConnection((errorConn, conn) => {
@@ -11,7 +12,7 @@ router.post('/cadastro', (req, res, next) => {
             if (errorSelect) { return res.status(500).send({ error: errorSelect }) }
             if(resultSelect.length > 0) {
                 conn.release()
-                return res.status(409).send({ mensagem: 'Usuário já cadastrado' })
+                return res.status(409).send({ mensagem: msg.USERS.ALREADY_EXIST })
             } else {
                 bcrypt.hash(req.body.senha, 10, (errorBcrypt, hash) => {
                     if(errorBcrypt) { return res.status(500).send({ error: errorBcrypt }) }
@@ -20,7 +21,7 @@ router.post('/cadastro', (req, res, next) => {
                             conn.release()
                             if(errorInsert) { return res.status(500).send({ error: errorInsert }) }
                             const response = {
-                                mensagem: 'Usuário criado com sucesso',
+                                mensagem: msg.USERS.CREATED,
                                 usuarioCriado: {
                                     id_usuario: resultInsert.insertId,
                                     email: req.body.email
@@ -42,10 +43,10 @@ router.post('/login', (req, res, next) => {
             conn.release()
             if (errorSelect) { return res.status(500).send({ error: errorSelect }) }
             if(resultSelect.length < 1) {
-                return res.status(401).send({ mensagem: 'Falha na autenticação' })
+                return res.status(401).send({ mensagem: msg.USERS.AUTHENTICATION_FAILED })
             } else {
                 bcrypt.compare(req.body.senha, resultSelect[0].senha, (errorBcrypt, resultBcrypt) => {
-                    if(errorBcrypt) { return res.status(401).send({ mensagem: 'Falha na autenticação' }) }
+                    if(errorBcrypt) { return res.status(401).send({ mensagem: msg.USERS.AUTHENTICATION_FAILED }) }
                     
                     if(resultBcrypt) { 
                         const token = jwt.sign({
@@ -57,12 +58,12 @@ router.post('/login', (req, res, next) => {
                             expiresIn: '1h'
                         })
                         return res.status(200).send({
-                            mensagem: 'Autenticado com sucesso',
+                            mensagem: msg.USERS.AUTHENTICATED,
                             token: token
                         })
                     }
 
-                    return res.status(401).send({ mensagem: 'Falha na autenticação' })
+                    return res.status(401).send({ mensagem: msg.USERS.AUTHENTICATION_FAILED })
 
                 })
             }

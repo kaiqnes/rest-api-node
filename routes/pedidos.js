@@ -1,8 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const mysql = require('../mysql').pool
-
-const URL_BASE_PRODUTOS = 'http://localhost:3000/produtos/'
+const msg = require('../contants')
 
 // RETORNA TODOS OS PEDIDOS
 router.get('/', (req, res, next) => {
@@ -23,7 +22,7 @@ router.get('/', (req, res, next) => {
                 const response = {
                     request: {
                         tipo: 'GET',
-                        descricao: 'Retorna todos os pedidos'
+                        descricao: msg.ORDERS.ALL_ORDERS_DETAILS
                     },
                     pedidos: result.map(ped => {
                         return {
@@ -59,7 +58,7 @@ router.get('/:id_pedido', (req, res, next) => {
 
                 if (result.length === 0) {
                     return res.status(404).send({
-                        mensagem: 'Este pedido não foi encontrado'
+                        mensagem: msg.ORDERS.NOT_FOUND
                     })
                 }
                 
@@ -70,7 +69,7 @@ router.get('/:id_pedido', (req, res, next) => {
                         quantidade: result[0].quantidade,
                         request: {
                             tipo: 'GET',
-                            descricao: 'Retorna detalhes de um pedido'
+                            descricao: msg.ORDERS.ORDER_DETAILS
                         }
                     }
                 }
@@ -94,7 +93,7 @@ router.post('/', (req, res, next) => {
 
                 if (result.length === 0) {
                     return res.status(404).send({
-                        mensagem: 'Este ID de produto não foi encontrado'
+                        mensagem: msg.ORDERS.PRODUCT_NOT_FOUND
                     })
                 }
 
@@ -105,14 +104,14 @@ router.post('/', (req, res, next) => {
                         conn.release()
                         if (error) { return res.status(500).send({ error: error }) }
                         const response = {
-                            mensagem: 'Pedido criado com sucesso',
+                            mensagem: msg.ORDERS.CREATED,
                             pedidoCriado: {
                                 id_pedido: result.id_pedido,
                                 id_produto: req.body.id_produto,
                                 quantidade: req.body.quantidade,
                                 request: {
                                     tipo: 'POST',
-                                    descricao: 'Cria um novo pedido'
+                                    descricao: msg.ORDERS.CREATED_DETAILS
                                 }
                             }
                         }
@@ -138,10 +137,10 @@ router.delete('/', (req, res, next) => {
                 if (error) { return res.status(500).send({ error: error }) }
 
                 const response = {
-                    mensagem: 'Pedido removido com sucesso',
+                    mensagem: msg.ORDERS.REMOVED,
                     request: {
                         tipo: 'DELETE',
-                        descricao: 'Remove um pedido'
+                        descricao: msg.ORDERS.REMOVED_DETAILS
                     }
                 }
                 return res.status(202).send(response)
