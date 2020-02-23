@@ -17,7 +17,9 @@ router.post('/cadastro', (req, res, next) => {
                 bcrypt.hash(req.body.senha, 10, (errorBcrypt, hash) => {
                     if(errorBcrypt) { return res.status(500).send({ error: errorBcrypt }) }
                     conn.query(
-                        'INSERT INTO usuarios (email, senha) VALUES (?,?)', [req.body.email, hash], (errorInsert, resultInsert) => {
+                        'INSERT INTO usuarios (email, senha) VALUES (?,?)',
+                        [req.body.email, hash],
+                        (errorInsert, resultInsert) => {
                             conn.release()
                             if(errorInsert) { return res.status(500).send({ error: errorInsert }) }
                             const response = {
@@ -43,7 +45,9 @@ router.post('/cadastro', (req, res, next) => {
 router.post('/login', (req, res, next) => {
     mysql.getConnection((errorConn, conn) => {
         if (errorConn) { return res.status(500).send({ error: errorConn }) }
-        conn.query('SELECT * FROM usuarios WHERE email = ?', [req.body.email], (errorSelect, resultSelect) => {
+        conn.query('SELECT * FROM usuarios WHERE email = ?',
+        [req.body.email],
+        (errorSelect, resultSelect) => {
             conn.release()
             if (errorSelect) { return res.status(500).send({ error: errorSelect }) }
             if (resultSelect.length < 1) {
