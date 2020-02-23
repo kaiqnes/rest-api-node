@@ -10,7 +10,7 @@ router.post('/cadastro', (req, res, next) => {
         if (errorConn) { return res.status(500).send({ error: errorConn }) }
         conn.query('SELECT * FROM usuarios WHERE email = ?', [req.body.email], (errorSelect, resultSelect) => {
             if (errorSelect) { return res.status(500).send({ error: errorSelect }) }
-            if(resultSelect.length > 0) {
+            if (resultSelect.length > 0) {
                 conn.release()
                 return res.status(409).send({ mensagem: msg.USERS.ALREADY_EXIST })
             } else {
@@ -24,7 +24,11 @@ router.post('/cadastro', (req, res, next) => {
                                 mensagem: msg.USERS.CREATED,
                                 usuarioCriado: {
                                     id_usuario: resultInsert.insertId,
-                                    email: req.body.email
+                                    email: req.body.email,
+                                    request: {
+                                        tipo: 'POST',
+                                        descricao: msg.USERS.CREATED_DETAILS
+                                    }
                                 }
                             }
                             return res.status(201).send(response)
@@ -42,13 +46,12 @@ router.post('/login', (req, res, next) => {
         conn.query('SELECT * FROM usuarios WHERE email = ?', [req.body.email], (errorSelect, resultSelect) => {
             conn.release()
             if (errorSelect) { return res.status(500).send({ error: errorSelect }) }
-            if(resultSelect.length < 1) {
+            if (resultSelect.length < 1) {
                 return res.status(401).send({ mensagem: msg.USERS.AUTHENTICATION_FAILED })
             } else {
                 bcrypt.compare(req.body.senha, resultSelect[0].senha, (errorBcrypt, resultBcrypt) => {
-                    if(errorBcrypt) { return res.status(401).send({ mensagem: msg.USERS.AUTHENTICATION_FAILED }) }
-                    
-                    if(resultBcrypt) { 
+                    if (errorBcrypt) { return res.status(401).send({ mensagem: msg.USERS.AUTHENTICATION_FAILED }) }
+                    if (resultBcrypt) { 
                         const token = jwt.sign({
                             id_usuario: resultSelect[0].id_usuario,
                             email: resultSelect[0].email
@@ -57,14 +60,17 @@ router.post('/login', (req, res, next) => {
                         {
                             expiresIn: '1h'
                         })
-                        return res.status(200).send({
+                        const response = {
                             mensagem: msg.USERS.AUTHENTICATED,
-                            token: token
-                        })
+                            token: token,
+                            request: {
+                                tipo: 'POST',
+                                descricao: msg.USERS.AUTHENTICATION_DETAILS
+                            }
+                        }
+                        return res.status(200).send(response)
                     }
-
                     return res.status(401).send({ mensagem: msg.USERS.AUTHENTICATION_FAILED })
-
                 })
             }
         })

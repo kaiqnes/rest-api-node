@@ -46,15 +46,12 @@ router.get('/:id_produto', (req, res, next) => {
             [id],
             (error, result, fields) => {
                 conn.release()
-
                 if(error) { return res.status(500).send({ error: error, response: null }) }
-
                 if (result.length === 0) {
                     return res.status(404).send({
                         mensagem: msg.PRODUCTS.NOT_FOUND
                     })
                 }
-                
                 const response = {
                     produto: {
                         id_produto: result[0].id_produto,
@@ -67,7 +64,6 @@ router.get('/:id_produto', (req, res, next) => {
                         }
                     }
                 }
-
                 return res.status(201).send({ response })
             }
         )
@@ -98,7 +94,6 @@ router.post('/', (upload.single('produto_imagem')), (req, res, next) => {
                         }
                     }
                 }
-
                 return res.status(201).send({ response })
             }
         )
@@ -110,14 +105,10 @@ router.patch('/', (req, res, next) => {
     mysql.getConnection((error, conn) => {
         if (error) { return res.status(500).send({ error: error }) }
         conn.query(
-            `UPDATE produtos
-                SET nome = ?,
-                    preco = ?
-                WHERE id_produto = ?;`,
+            `UPDATE produtos SET nome = ?, preco = ? WHERE id_produto = ?;`,
             [req.body.nome, req.body.preco, req.body.id_produto],
             (error, result, fields) => {
                 conn.release()
-
                 if (error) { return res.status(500).send({ error: error }) }
                 const response = {
                     mensagem: msg.PRODUCTS.UPDATED,
@@ -131,7 +122,6 @@ router.patch('/', (req, res, next) => {
                         }
                     }
                 }
-
                 return res.status(202).send({ response })
             }
         )
@@ -147,9 +137,7 @@ router.delete('/', (req, res, next) => {
             [req.body.id_produto],
             (error, result, fields) => {
                 conn.release()
-
                 if (error) { return res.status(500).send({ error: error }) }
-
                 const response = {
                     mensagem: msg.PRODUCTS.REMOVED,
                     request: {

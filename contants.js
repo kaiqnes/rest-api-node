@@ -2,8 +2,10 @@ module.exports = {
     USERS: {
         ALREADY_EXIST: 'Usuário já cadastrado',
         CREATED: 'Usuário criado com sucesso',
+        CREATED_DETAILS: 'Cria um novo usuário',
         AUTHENTICATION_FAILED: 'Falha na autenticação',
-        AUTHENTICATED: 'Autenticado com sucesso'
+        AUTHENTICATED: 'Autenticado com sucesso',
+        AUTHENTICATION_DETAILS: 'Autentica um usuário'
     },
 
     ORDERS: {

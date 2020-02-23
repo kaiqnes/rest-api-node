@@ -8,14 +8,8 @@ router.get('/', (req, res, next) => {
     mysql.getConnection((error, conn) => {
         if (error) { return res.status(500).send({ error: error }) }
         conn.query(
-            `SELECT ped.id_pedido,
-                    ped.quantidade,
-                    pro.id_produto,
-                    pro.nome,
-                    pro.preco
-               FROM pedidos ped
-         INNER JOIN produtos pro
-                 ON ped.id_produto = pro.id_produto;`,
+            `SELECT ped.id_pedido, ped.quantidade, pro.id_produto, pro.nome, pro.preco
+            FROM pedidos ped INNER JOIN produtos pro ON ped.id_produto = pro.id_produto;`,
             (error, result, fields) => {
                 conn.release()
                 if(error) { return res.status(500).send({ error: error, response: null }) }
@@ -45,7 +39,6 @@ router.get('/', (req, res, next) => {
 // RETORNA DETALHES DE UM PEDIDO
 router.get('/:id_pedido', (req, res, next) => {
     const id = req.params.id_pedido
-
     mysql.getConnection((error, conn) => {
         if (error) { return res.status(500).send({ error: error }) }
         conn.query(
@@ -53,15 +46,12 @@ router.get('/:id_pedido', (req, res, next) => {
             [id],
             (error, result, fields) => {
                 conn.release()
-
-                if(error) { return res.status(500).send({ error: error, response: null }) }
-
+                if (error) { return res.status(500).send({ error: error, response: null }) }
                 if (result.length === 0) {
                     return res.status(404).send({
                         mensagem: msg.ORDERS.NOT_FOUND
                     })
                 }
-                
                 const response = {
                     pedido: {
                         id_pedido: result[0].id_pedido,
@@ -73,7 +63,6 @@ router.get('/:id_pedido', (req, res, next) => {
                         }
                     }
                 }
-
                 return res.status(201).send({ response })
             }
         )
@@ -88,15 +77,12 @@ router.post('/', (req, res, next) => {
             'SELECT * FROM produtos WHERE id_produto = ?',
             [req.body.id_produto],
             (error, result, fields) => {
-                // conn.release()
                 if (error) { return res.status(500).send({ error: error }) }
-
                 if (result.length === 0) {
                     return res.status(404).send({
                         mensagem: msg.ORDERS.PRODUCT_NOT_FOUND
                     })
                 }
-
                 conn.query(
                     'INSERT INTO pedidos (id_produto, quantidade) VALUES (?,?);',
                     [req.body.id_produto, req.body.quantidade],
@@ -115,7 +101,6 @@ router.post('/', (req, res, next) => {
                                 }
                             }
                         }
-        
                         return res.status(201).send({ response })
                     }
                 )
@@ -133,9 +118,7 @@ router.delete('/', (req, res, next) => {
             [req.body.id_pedido],
             (error, result, fields) => {
                 conn.release()
-
                 if (error) { return res.status(500).send({ error: error }) }
-
                 const response = {
                     mensagem: msg.ORDERS.REMOVED,
                     request: {
