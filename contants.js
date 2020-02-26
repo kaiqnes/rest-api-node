@@ -29,5 +29,9 @@ module.exports = {
         UPDATED_DETAILS: 'Atualiza um produto',
         REMOVED: 'Produto removido com sucesso',
         REMOVED_DETAILS: 'Remove um produto'
+    },
+
+    LOGIN: {
+        FAILED: 'Falha na autenteicação'
     }
 }

@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const mysql = require('../mysql').pool
+
+const login = require('../middleware/login')
 const msg = require('../contants')
 
 // RETORNA TODOS OS PEDIDOS
@@ -70,7 +72,7 @@ router.get('/:id_pedido', (req, res, next) => {
 })
 
 // INSERE UM PEDIDO
-router.post('/', (req, res, next) => {
+router.post('/', login.obrigatorio, (req, res, next) => {
     mysql.getConnection((error, conn) => {
         if (error) { return res.status(500).send({ error: error }) }
         conn.query(
@@ -110,7 +112,7 @@ router.post('/', (req, res, next) => {
 })
 
 // REMOVE UM PEDIDO
-router.delete('/', (req, res, next) => {
+router.delete('/', login.obrigatorio, (req, res, next) => {
     mysql.getConnection((error, conn) => {
         if (error) { return res.status(500).send({ error: error }) }
         conn.query(
