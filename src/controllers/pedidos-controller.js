@@ -1,5 +1,5 @@
-const mysql = require('../mysql').pool
-const msg = require('../contants')
+const mysql = require('../../config/mysql').pool
+const msg = require('../constants/contants')
 
 module.exports = {
     getAllOrders: (req, res, next) => {

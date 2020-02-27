@@ -1,5 +1,5 @@
-const mysql = require('../mysql').pool
-const msg = require('../contants')
+const mysql = require('../../config/mysql').pool
+const msg = require('../constants/contants')
 
 exports.getAllProducts = (req, res, next) => {
     mysql.getConnection((error, conn) => {

@@ -26,9 +26,9 @@ app.use((req, res, next) => {
 })
 
 // ROTAS ESPECÍFICAS
-const rotaProdutos = require('./routes/produtos')
-const rotaPedidos = require('./routes/pedidos')
-const rotaUsuarios = require('./routes/usuarios')
+const rotaProdutos = require('../src/routes/produtos')
+const rotaPedidos = require('../src/routes/pedidos')
+const rotaUsuarios = require('../src/routes/usuarios')
 
 app.use('/produtos', rotaProdutos)
 app.use('/pedidos', rotaPedidos)

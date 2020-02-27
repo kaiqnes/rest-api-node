@@ -1,8 +1,8 @@
-const mysql = require('../mysql').pool
+const mysql = require('../../config/mysql').pool
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-const msg = require('../contants')
+const msg = require('../constants/contants')
 
 
 exports.signUp = (req, res, next) => {
