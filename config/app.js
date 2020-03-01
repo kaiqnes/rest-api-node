@@ -36,7 +36,8 @@ app.use('/usuarios', rotaUsuarios)
 
 // MENSAGEM DE ERRO 404
 app.use((req, res, next) => {
-    const error = new Error('Não encontrado')
+    console.log(process.env)
+    const error = new Error('Não deu')
     error.status = 404
     next(error)
 })
